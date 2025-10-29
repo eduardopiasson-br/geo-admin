@@ -24,7 +24,6 @@ class EditLayer extends EditRecord
         $geojsonFile = $data['geojson_file'] ?? null;
         $geometryData = $data['geometry_data'] ?? null;
 
-        // Se não há novo arquivo, não alterar a geometria
         if (!$geojsonFile && !$geometryData) {
             unset($data['geojson_file'], $data['geometry_data']);
             return $data;

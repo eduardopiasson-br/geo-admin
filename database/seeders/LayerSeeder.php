@@ -13,7 +13,6 @@ class LayerSeeder extends Seeder
      */
     public function run(): void
     {
-        // Limpar camadas existentes (opcional - comentar se não quiser limpar)
         // Layer::truncate();
 
         // Exemplo 1: Região do Distrito Federal (Brasil)

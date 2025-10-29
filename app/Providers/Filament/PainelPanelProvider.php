@@ -30,7 +30,7 @@ class PainelPanelProvider extends PanelProvider
             ->path('painel')
             ->login()
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Green,
             ])
             ->discoverResources(in: app_path('Filament/Painel/Resources'), for: 'App\\Filament\\Painel\\Resources')
             ->resources([

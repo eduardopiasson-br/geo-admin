@@ -93,7 +93,6 @@
     </script>
     
     <script type="module">
-        // Funções de utilitário que devem estar disponíveis imediatamente
         function hideLoading() {
             const overlay = document.getElementById("loadingOverlay");
             if (overlay) {
@@ -127,10 +126,8 @@
             showError("Erro: Biblioteca ArcGIS não carregou. Verifique sua conexão com a internet.");
             hideLoading();
         } else {
-            // Aguardar o DOM estar pronto
             document.addEventListener('DOMContentLoaded', async function() {
                 try {
-                    // Configurar API key primeiro
                     const esriConfig = await $arcgis.import("@arcgis/core/config.js");
                     if (window.arcgisApiKey) {
                         esriConfig.apiKey = window.arcgisApiKey;
@@ -139,14 +136,12 @@
                         console.warn("API Key não configurada no .env");
                     }
                     
-                    // Importar módulos necessários do ArcGIS
                     const GeoJSONLayer = await $arcgis.import("@arcgis/core/layers/GeoJSONLayer.js");
                     const Legend = await $arcgis.import("@arcgis/core/widgets/Legend.js");
                     const SimpleRenderer = await $arcgis.import("@arcgis/core/renderers/SimpleRenderer.js");
                     const SimpleFillSymbol = await $arcgis.import("@arcgis/core/symbols/SimpleFillSymbol.js");
                     const SimpleLineSymbol = await $arcgis.import("@arcgis/core/symbols/SimpleLineSymbol.js");
                     
-                    // Obter referência ao componente do mapa
                     const mapElement = document.querySelector("arcgis-map");
                     
                     if (!mapElement) {
@@ -158,25 +153,21 @@
                     
                     console.log("Aguardando view estar pronta...");
                     
-                    // Aguardar view estar disponível - múltiplas tentativas
                     let view = null;
                     let attempts = 0;
-                    const maxAttempts = 50; // 5 segundos (50 * 100ms)
+                    const maxAttempts = 50;
                     
                     while (!view && attempts < maxAttempts) {
-                        // Verificar se view já está disponível
                         if (mapElement.view) {
                             view = mapElement.view;
                             console.log("View encontrada diretamente");
                             break;
                         }
                         
-                        // Aguardar um pouco antes de tentar novamente
                         await new Promise(resolve => setTimeout(resolve, 100));
                         attempts++;
                     }
                     
-                    // Se ainda não temos view, tentar viewOnReady
                     if (!view) {
                         try {
                             await mapElement.viewOnReady();
@@ -184,7 +175,6 @@
                             console.log("View obtida via viewOnReady()");
                         } catch (e) {
                             console.warn("viewOnReady também falhou:", e);
-                            // Tentar mais uma vez após um delay
                             await new Promise(resolve => setTimeout(resolve, 1000));
                             view = mapElement.view;
                         }
@@ -194,22 +184,18 @@
                         throw new Error("Não foi possível obter a view do mapa após múltiplas tentativas");
                     }
                     
-                    // Aguardar view estar completamente carregada
                     await view.when();
                     
                     console.log("Mapa carregado com sucesso");
                     console.log("View ready, center:", view.center, "zoom:", view.zoom);
                     
-                    // Esconder loading agora que a view está pronta
                     hideLoading();
                     
-                    // Configurar mapa para Brasil
                     view.goTo({
-                        center: [-47.8825, -15.7942], // Centro do Brasil
+                        center: [-47.8825, -15.7942],
                         zoom: 4
                     });
                     
-                    // Função para carregar camadas
                     async function loadLayers() {
                         try {
                             const response = await fetch('/api/layers');
@@ -220,7 +206,6 @@
                             
                             const geoJSON = await response.json();
                             
-                            // Sempre esconder loading após receber resposta da API
                             if (!geoJSON.features || geoJSON.features.length === 0) {
                                 console.log("Nenhuma camada encontrada no banco de dados");
                                 hideLoading();
@@ -259,14 +244,10 @@
                                 }
                             });
                             
-                            // Adicionar camada ao mapa
                             mapElement.map.add(geoJSONLayer);
-                            
-                            // Aguardar a camada carregar
                             geoJSONLayer.when(function() {
                                 console.log("Camada GeoJSON carregada com sucesso");
                                 
-                                // Tentar ajustar extensão
                                 if (geoJSONLayer.fullExtent) {
                                     view.goTo(geoJSONLayer.fullExtent).catch(function(extentError) {
                                         console.warn("Erro ao ajustar extensão:", extentError);
@@ -283,7 +264,6 @@
                                 hideLoading();
                             });
                             
-                            // Criar legenda
                             const legend = new Legend({
                                 view: view,
                                 layerInfos: [{
@@ -301,7 +281,6 @@
                         }
                     }
                     
-                    // Carregar camadas após um pequeno delay para garantir renderização
                     setTimeout(function() {
                         loadLayers();
                     }, 500);

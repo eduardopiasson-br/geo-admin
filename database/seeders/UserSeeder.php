@@ -20,7 +20,7 @@ class UserSeeder extends Seeder
                 'name' => 'Administrador',
                 'email' => 'admin@geo-admin.local',
                 'email_verified_at' => now(),
-                'password' => Hash::make('password'), // Senha padrão: password
+                'password' => Hash::make('password'),
             ]
         );
 

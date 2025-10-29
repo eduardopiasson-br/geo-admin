@@ -51,7 +51,7 @@ class LayerResource extends Resource
                     ->directory('geojson-uploads')
                     ->visibility('private')
                     ->maxSize(10240) // 10MB
-                    ->required(fn ($record) => $record === null) // Obrigatório apenas na criação
+                    ->required(fn ($record) => $record === null)
                     ->deletable(false)
                     ->downloadable(false)
                     ->columnSpanFull()
@@ -82,7 +82,6 @@ class LayerResource extends Resource
                                 ]);
                             }
 
-                            // Armazenar geometria serializada no estado oculto
                             $set('geometry_data', json_encode($geometry));
                         } catch (ValidationException $e) {
                             throw $e;

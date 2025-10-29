@@ -14,7 +14,6 @@ class CreateLayer extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        // Remover campos que não devem ser salvos diretamente
         $geojsonFile = $data['geojson_file'] ?? null;
         $geometryData = $data['geometry_data'] ?? null;
 
